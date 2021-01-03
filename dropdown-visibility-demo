@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+.custom-select {
+  position: relative;
+  font-family: Arial;
+}
+
+.custom-select select {
+  display: none; 
+}
+
+.select-selected {
+  background-color: DodgerBlue;
+}
+
+.select-selected:after {
+  position: absolute;
+  content: "";
+  top: 14px;
+  right: 10px;
+  width: 0;
+  height: 0;
+  border: 6px solid transparent;
+  border-color: #fff transparent transparent transparent;
+}
+
+.select-selected.select-arrow-active:after {
+  border-color: transparent transparent #fff transparent;
+  top: 7px;
+}
+
+
+.select-items div,.select-selected {
+  color: #ffffff;
+  padding: 8px 16px;
+  border: 1px solid transparent;
+  border-color: transparent transparent rgba(0, 0, 0, 0.1) transparent;
+  cursor: pointer;
+  user-select: none;
+}
+
+.select-items {
+  position: absolute;
+  background-color: DodgerBlue;
+  top: 100%;
+  left: 0;
+  right: 0;
+  z-index: 99;
+}
+
+.select-hide {
+  display: none;
+}
+
+.select-items div:hover, .same-as-selected {
+  background-color: rgba(0, 0, 0, 0.1);
+}
+</style>
+</head>     
+
+<body>
+<h2>Demo for individual select</h2>
+<div class="custom-select" style="width:200px;">
+  <select id="lang1">
+    <option value="0">Test Lang:</option>
+    <option value="1">PHP</option>
+    <option value="2">Python</option>
+    <option value="3">Java</option>
+    <option value="4">C#</option>
+  </select>
+</div>
+</br>
+<form action="">
+  
+  <label for="cars">Choose a car:</label></br>
+
+  <select id="cars">
+    <option value="volvo" disabled>Volvo</option>
+    <option value="benz" disabled>Benz</option>
+    <option value="nano" disabled>Nano</option>
+    <option value="toyota" disabled>Toyota</option>
+    <option value="ecosport" disabled>Ecosport</option>
+    <option value="indica" disabled>Indica</option>
+    <option value="saab" disabled>Saab</option>
+    <option value="vw" disabled>VW</option>
+    <option value="audi" disabled>Audi</option>
+  </select></br>
+  <label for="lang">Select your lang:</label></br>
+  <select id="lang" name="lang" size="2">
+    <option value="php">PHP</option>
+    <option value="c#">C#</option>
+    <option value="python" disabled>Python</option>
+    <option value="java">Java</option>
+  </select><br><br>
+  <input type="submit">
+</form>
+</br>
+
+<h2>Demo For Multiple Selections</h2>
+<form action="">
+  <label for="lang2">Select your lang:</label></br>
+  <select id="lang2" name="lang2" size="4" multiple>
+    <option value="php">PHP</option>
+    <option value="c#">C#</option>
+    <option value="python">Python</option>
+    <option value="java">Java</option>
+  </select><br><br>
+  <input type="submit">
+</form>
+</br>
+
+<script>
+var x, i, j, l, ll, selElmnt, a, b, c;
+/*look for any elements with the class "custom-select":*/
+x = document.getElementsByClassName("custom-select");
+l = x.length;
+for (i = 0; i < l; i++) {
+  selElmnt = x[i].getElementsByTagName("select")[0];
+  ll = selElmnt.length;
+  /*for each element, create a new DIV that will act as the selected item:*/
+  a = document.createElement("DIV");
+  a.setAttribute("class", "select-selected");
+  a.innerHTML = selElmnt.options[selElmnt.selectedIndex].innerHTML;
+  x[i].appendChild(a);
+  /*for each element, create a new DIV that will contain the option list:*/
+  b = document.createElement("DIV");
+  b.setAttribute("class", "select-items select-hide");
+  for (j = 1; j < ll; j++) {
+    c = document.createElement("DIV");
+    c.innerHTML = selElmnt.options[j].innerHTML;
+    c.addEventListener("click", function(e) {
+        var y, i, k, s, h, sl, yl;
+        s = this.parentNode.parentNode.getElementsByTagName("select")[0];
+        sl = s.length;
+        h = this.parentNode.previousSibling;
+        for (i = 0; i < sl; i++) {
+          if (s.options[i].innerHTML == this.innerHTML) {
+            s.selectedIndex = i;
+            h.innerHTML = this.innerHTML;
+            y = this.parentNode.getElementsByClassName("same-as-selected");
+            yl = y.length;
+            for (k = 0; k < yl; k++) {
+              y[k].removeAttribute("class");
+            }
+            this.setAttribute("class", "same-as-selected");
+            break;
+          }
+        }
+        h.click();
+    });
+    b.appendChild(c);
+  }
+  x[i].appendChild(b);
+  a.addEventListener("click", function(e) {
+      e.stopPropagation();
+      closeAllSelect(this);
+      this.nextSibling.classList.toggle("select-hide");
+      this.classList.toggle("select-arrow-active");
+    });
+}
+function closeAllSelect(elmnt) {
+  var x, y, i, xl, yl, arrNo = [];
+  x = document.getElementsByClassName("select-items");
+  y = document.getElementsByClassName("select-selected");
+  xl = x.length;
+  yl = y.length;
+  for (i = 0; i < yl; i++) {
+    if (elmnt == y[i]) {
+      arrNo.push(i)
+    } else {
+      y[i].classList.remove("select-arrow-active");
+    }
+  }
+  for (i = 0; i < xl; i++) {
+    if (arrNo.indexOf(i)) {
+      x[i].classList.add("select-hide");
+    }
+  }
+}
+document.addEventListener("click", closeAllSelect);
+</script>
+
+</body>
+</html>
